@@ -76,6 +76,10 @@ else
     log_info ".bashrc already configured."
 fi
 
+if ! command -v mise >/dev/null 2>&1; then
+    log_warn "mise not found — .bashrc mise activation will be skipped until mise is installed."
+fi
+
 # --- Create cache dirs for nushell integrations ---
 
 log_step "Creating nushell cache directories..."

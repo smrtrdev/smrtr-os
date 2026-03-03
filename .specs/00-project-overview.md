@@ -31,7 +31,7 @@ smrtr-os/
 ├── lib/                    # Shared helper functions (logging, pkg install)
 ├── features/               # One script per feature (XX-name.sh)
 │   ├── 01-base-packages.sh
-│   ├── 02-shell.sh
+│   ├── 02-development-tools.sh
 │   ├── 03-niri.sh
 │   ├── ...
 ├── config/                 # Dotfiles and config templates

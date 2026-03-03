@@ -165,3 +165,4 @@ Niri's `environment {}` block should only set compositor-specific overrides (e.g
 ## Dependencies
 
 - `01-base-packages` (needs paru, git)
+- `02-development-tools` (mise must be installed before shell activation is configured)

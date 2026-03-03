@@ -21,7 +21,7 @@ Install essential development tools and editors for a productive coding environm
   node = "lts"
   python = "latest"
   ```
-- Shell activation is handled in spec 02:
+- Shell activation is handled in spec 09:
   - Bash: `eval "$(mise activate bash)"` in .bashrc
   - Nushell: `mise activate nu | save -f ~/.cache/mise/init.nu` sourced in config.nu
 
@@ -77,4 +77,3 @@ Install essential development tools and editors for a productive coding environm
 ## Dependencies
 
 - `01-base-packages` (base-devel, git)
-- `02-shell` (bashrc integration for mise, editor vars)
