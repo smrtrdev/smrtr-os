@@ -50,7 +50,7 @@ EOF
             cat >> "$BASH_PROFILE" << 'SMRTR_BASH_PROFILE'
 
 # smrtr-os niri autostart
-if [ -z "$WAYLAND_DISPLAY" ] && [ "$XDG_VTNR" -eq 1 ]; then
+if [ -z "$WAYLAND_DISPLAY" ] && [ "${XDG_VTNR:-0}" -eq 1 ]; then
     exec niri-session
 fi
 SMRTR_BASH_PROFILE
