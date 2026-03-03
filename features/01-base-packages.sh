@@ -17,7 +17,7 @@ if ! grep -q "^\[multilib\]" /etc/pacman.conf; then
     sudo bash -c 'echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf'
 fi
 
-sudo pacman -Sy --noconfirm
+sudo pacman -Syu --noconfirm
 
 # --- Core Packages ---
 
