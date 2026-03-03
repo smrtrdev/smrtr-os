@@ -37,14 +37,14 @@ The installer runs each feature module in order, prompting for choices along the
 | Script | What it does |
 |--------|-------------|
 | `01-base-packages.sh` | Pacman config, paru, PipeWire, networking, bluetooth, firewall, GPU drivers |
-| `02-shell.sh` | Nushell, bash, starship, fzf, eza, bat, zoxide, zellij, fastfetch |
-| `03-niri.sh` | Niri compositor, swaylock, swayidle, wallpaper, portals, keybindings |
-| `04-terminal.sh` | Ghostty terminal, fonts |
-| `05-waybar.sh` | Status bar with conditional battery module |
-| `06-app-launcher.sh` | Walker launcher with catppuccin theme |
-| `07-notifications.sh` | Mako notification daemon |
-| `08-file-manager.sh` | Nautilus, imv, zathura, mpv, MIME defaults |
-| `09-development-tools.sh` | Neovim, git, lazygit, mise, podman, Claude Code |
+| `02-development-tools.sh` | Neovim, git, lazygit, mise, podman, Claude Code |
+| `03-shell.sh` | Nushell, bash, starship, fzf, eza, bat, zoxide, zellij, fastfetch |
+| `04-niri.sh` | Niri compositor, swaylock, swayidle, wallpaper, portals, keybindings |
+| `05-terminal.sh` | Ghostty terminal, fonts |
+| `06-waybar.sh` | Status bar with conditional battery module |
+| `07-app-launcher.sh` | Walker launcher with catppuccin theme |
+| `08-notifications.sh` | Mako notification daemon |
+| `09-file-manager.sh` | Nautilus, imv, zathura, mpv, MIME defaults |
 | `10-theme.sh` | GTK/Qt theme, Papirus icons, cursors, fontconfig |
 | `11-login-manager.sh` | SDDM or TTY autologin |
 | `12-browser.sh` | Zen Browser (default) + Brave |

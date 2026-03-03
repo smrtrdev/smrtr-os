@@ -3,6 +3,10 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/../lib/helpers.sh"
 
+if ! command -v mise &>/dev/null; then
+    log_warn "mise is not on PATH. Shell configs reference 'mise activate' which will fail until mise is installed (see 02-development-tools.sh)."
+fi
+
 log_step "Installing shell tools..."
 pkg_install nushell starship fzf fd ripgrep eza bat zoxide tldr fastfetch zellij htop btop tree
 
