@@ -100,20 +100,41 @@ ensure_paru() {
     fi
 
     if pacman -Si paru &>/dev/null; then
-        sudo pacman -S --needed --noconfirm paru
-    else
-        log_info "paru package not available in repos. Building paru-bin from AUR..."
-        local tmpdir
-        tmpdir="$(mktemp -d)"
-        git clone https://aur.archlinux.org/paru-bin.git "$tmpdir/paru-bin"
-        (cd "$tmpdir/paru-bin" && makepkg -si --noconfirm)
-        rm -rf "$tmpdir"
+        log_info "Trying repo package: paru"
+        sudo pacman -R --noconfirm paru-bin paru-bin-debug &>/dev/null || true
+        if sudo pacman -S --noconfirm paru; then
+            if resolved="$(resolve_paru_bin)"; then
+                PARU_BIN="$resolved"
+                return 0
+            fi
+        fi
+        log_warn "Repo paru install did not produce a working binary."
     fi
 
-    if resolved="$(resolve_paru_bin)"; then
-        PARU_BIN="$resolved"
-        return 0
+    log_info "Building paru from AUR source..."
+    local tmpdir
+    tmpdir="$(mktemp -d)"
+    if git clone https://aur.archlinux.org/paru.git "$tmpdir/paru" && \
+       (cd "$tmpdir/paru" && makepkg -si --noconfirm); then
+        if resolved="$(resolve_paru_bin)"; then
+            PARU_BIN="$resolved"
+            rm -rf "$tmpdir"
+            return 0
+        fi
     fi
+    rm -rf "$tmpdir"
+
+    log_warn "Source build did not produce a working paru binary. Trying paru-bin as fallback..."
+    tmpdir="$(mktemp -d)"
+    if git clone https://aur.archlinux.org/paru-bin.git "$tmpdir/paru-bin" && \
+       (cd "$tmpdir/paru-bin" && makepkg -si --noconfirm); then
+        if resolved="$(resolve_paru_bin)"; then
+            PARU_BIN="$resolved"
+            rm -rf "$tmpdir"
+            return 0
+        fi
+    fi
+    rm -rf "$tmpdir"
 
     log_error "paru install/repair failed."
     return 1
