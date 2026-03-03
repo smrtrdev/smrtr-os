@@ -48,10 +48,7 @@ if ask_yes_no "Install LazyVim (preconfigured Neovim setup)?" "y"; then
         backup_config "$USER_CONFIG/nvim"
         rm -rf "$USER_CONFIG/nvim"
     fi
-    # Pinned to a known-good commit; review and update deliberately to avoid supply-chain risk.
-    LAZYVIM_STARTER_COMMIT="fca0af57cc3851b14f96a795a9c9bfafc5096dd1"
     git clone https://github.com/LazyVim/starter "$USER_CONFIG/nvim"
-    git -C "$USER_CONFIG/nvim" checkout "$LAZYVIM_STARTER_COMMIT"
     rm -rf "$USER_CONFIG/nvim/.git"
     log_info "LazyVim installed. Run nvim to complete setup."
 fi
