@@ -66,13 +66,14 @@ spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
 spawn-at-startup "xwayland-satellite"
 spawn-at-startup "gnome-keyring-daemon" "--start" "--components=secrets,ssh"
 spawn-at-startup "wlsunset" "-l" "48.2" "-L" "16.4"
+spawn-at-startup "walker" "--gapplication-service"
 
 // --- Keybindings ---
 
 binds {
     // App launchers
     Mod+Return { spawn "ghostty"; }
-    Mod+D { spawn "walker"; }
+    Mod+D { spawn-sh "nc -U \"$XDG_RUNTIME_DIR/walker/walker.sock\" || walker"; }
     Mod+E { spawn "nautilus"; }
     Mod+I { spawn "zen-browser"; }
 
