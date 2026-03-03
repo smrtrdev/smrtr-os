@@ -46,7 +46,7 @@ The installer runs each feature module in order, prompting for choices along the
 | `08-notifications.sh` | Mako notification daemon |
 | `09-file-manager.sh` | Nautilus, imv, zathura, mpv, MIME defaults |
 | `10-theme.sh` | GTK/Qt theme, Papirus icons, cursors, fontconfig |
-| `11-login-manager.sh` | SDDM or TTY autologin |
+| `11-login-manager.sh` | greetd + tuigreet or TTY autologin |
 | `12-browser.sh` | Zen Browser (default) + Brave |
 | `13-system-services.sh` | Sudo, sysctl, TRIM, timezone, locale, keyring, XDG dirs, env vars |
 

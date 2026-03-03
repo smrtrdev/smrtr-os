@@ -2,14 +2,18 @@
 
 ## Summary
 
-Configure a display manager (login screen) so the user boots directly into a graphical login prompt that starts Niri.
+Configure a login manager so the user boots into a password-based graphical login with `greetd` + `tuigreet`, then starts Niri.
 
 ## Requirements
 
-### Option A: SDDM (recommended)
-- `sddm` — Modern display manager with Wayland support
-- `sddm-catppuccin-theme` (AUR) or a simple dark theme
-- Enable `sddm.service`
+### Option A: greetd + tuigreet (recommended)
+- `greetd` — lightweight login manager for TTY/Wayland
+- `tuigreet` — TUI greeter used as `default_session`
+- Enable `greetd.service`
+- Configure `/etc/greetd/config.toml` with:
+  - `default_session` running tuigreet with remember/time/power actions
+  - password-based login prompt (no `initial_session` autologin)
+  - session command launching Niri via UWSM (`uwsm start -- niri-session`)
 
 ### Option B: No display manager (minimal)
 - Auto-login via `getty` autologin on TTY1 (optional — requires explicit confirmation)
@@ -30,20 +34,21 @@ Configure a display manager (login screen) so the user boots directly into a gra
     ```
   - Note: regardless of default shell, both files should be configured so the user can switch shells without breaking auto-login
 
-### SDDM Configuration (if Option A)
+### greetd Configuration (if Option A)
 
-**`/etc/sddm.conf.d/smrtr.conf`:**
-```ini
-[General]
-DisplayServer=wayland
+**`/etc/greetd/config.toml`:**
+```toml
+[terminal]
+vt = 1
 
-[Theme]
-Current=catppuccin-mocha
+[default_session]
+command = "tuigreet --theme 'time=yellow' --time --remember --remember-session --power-shutdown '/usr/bin/systemctl poweroff' --power-reboot '/usr/bin/systemctl reboot' --cmd 'uwsm start -- niri-session'"
+user = "greeter"
 ```
 
 ### PAM Integration
 - Whichever login method is chosen, the PAM config for that path must include `pam_gnome_keyring.so` so the keyring auto-unlocks on login.
-  - SDDM: `/etc/pam.d/sddm` (usually handled automatically by the `gnome-keyring` package)
+  - greetd: `/etc/pam.d/greetd` (usually handled automatically by the `gnome-keyring` package, but verify)
   - Getty autologin: `/etc/pam.d/login`
 - See `13-system-services` for full keyring setup details.
 
@@ -60,11 +65,10 @@ Current=catppuccin-mocha
 
 ## Acceptance Criteria
 
-- After boot, user sees a login screen (or auto-starts Niri if no DM).
+- After boot, user sees a tuigreet password prompt (or auto-starts Niri from TTY if no DM).
 - After login, Niri starts correctly with all autostart apps.
-- Logout returns to the login screen.
+- Logout returns to `tuigreet` login screen.
 
 ## Dependencies
 
 - `03-niri` (must be installed for the session to work)
-- `10-theme` (login screen uses theme)

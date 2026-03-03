@@ -41,7 +41,7 @@ Apply system-level tweaks, enable services, configure environment variables, and
 - Enable PAM auto-unlock (configure for the chosen login method — see spec 11):
   - Add `auth optional pam_gnome_keyring.so` at end of auth section
   - Add `session optional pam_gnome_keyring.so auto_start` at end of session section
-  - For SDDM: `/etc/pam.d/sddm` (usually handled automatically by gnome-keyring package, but verify)
+  - For greetd/tuigreet: `/etc/pam.d/greetd` (usually handled automatically by gnome-keyring package, but verify)
   - For TTY autologin: `/etc/pam.d/login`
 - Keyring daemon autostart is defined in spec 03 (Niri): `spawn-at-startup "gnome-keyring-daemon" "--start" "--components=secrets,ssh"`
 
@@ -74,7 +74,7 @@ XCURSOR_THEME=catppuccin-mocha-dark-cursors
 XCURSOR_SIZE=24
 ```
 
-Note: `environment.d` files are read by `systemd --user` and by display managers that support them (including SDDM). For TTY autologin (Option B in spec 11), the install script should also source these in the shell profile as a fallback.
+Note: `environment.d` files are read by `systemd --user` and by display managers that support them (including greetd). For TTY autologin (Option B in spec 11), the install script should also source these in the shell profile as a fallback.
 
 ## Acceptance Criteria
 

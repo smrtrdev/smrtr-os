@@ -4,28 +4,39 @@ source "$SMRTR_INSTALL/helpers/helpers.sh"
 
 log_step "Login manager setup..."
 
-login_method=$(ask_choice "Select login method:" "SDDM (graphical login)" "TTY autologin (minimal)")
+login_method=$(ask_choice "Select login method:" "greetd + tuigreet (graphical login)" "TTY autologin (minimal)")
 
 case "$login_method" in
-    "SDDM (graphical login)")
-        log_step "Installing SDDM..."
-        pkg_install sddm
-        aur_install sddm-catppuccin-theme || log_warn "SDDM theme not found in AUR, using default."
+    "greetd + tuigreet (graphical login)")
+        log_step "Installing greetd + tuigreet (password login)..."
+        pkg_install greetd tuigreet
 
-        sudo mkdir -p /etc/sddm.conf.d
-        sudo tee /etc/sddm.conf.d/smrtr.conf >/dev/null <<'EOF'
-[General]
-DisplayServer=wayland
+        sudo mkdir -p /etc/greetd
+        sudo tee /etc/greetd/config.toml >/dev/null <<EOF
+[terminal]
+vt = 1
 
-[Theme]
-Current=catppuccin-mocha
+[default_session]
+command = "tuigreet --theme 'time=yellow' --time --remember --remember-session --power-shutdown '/usr/bin/systemctl poweroff' --power-reboot '/usr/bin/systemctl reboot' --cmd 'uwsm start -- niri-session'"
+user = "greeter"
 EOF
-        enable_service sddm.service
-        log_info "SDDM configured and enabled."
+
+        sudo systemctl disable --now sddm.service 2>/dev/null || true
+        enable_service greetd.service
+        log_info "greetd configured and enabled."
+
+        # Ensure PAM gnome-keyring config for password-based tuigreet login
+        if ! grep -q "pam_gnome_keyring.so" /etc/pam.d/greetd 2>/dev/null; then
+            log_warn "Adding pam_gnome_keyring hooks to /etc/pam.d/greetd for keyring auto-unlock."
+            sudo tee -a /etc/pam.d/greetd >/dev/null <<'EOF'
+auth       optional     pam_gnome_keyring.so
+session    optional     pam_gnome_keyring.so auto_start
+EOF
+        fi
 
         # Verify PAM gnome-keyring config
-        if ! grep -q "pam_gnome_keyring" /etc/pam.d/sddm 2>/dev/null; then
-            log_warn "gnome-keyring PAM not found in /etc/pam.d/sddm — keyring may not auto-unlock."
+        if ! grep -q "pam_gnome_keyring" /etc/pam.d/greetd 2>/dev/null; then
+            log_warn "gnome-keyring PAM not found in /etc/pam.d/greetd — keyring may not auto-unlock."
         fi
         ;;
 
