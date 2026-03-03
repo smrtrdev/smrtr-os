@@ -66,17 +66,23 @@ aur_install() {
     fi
 }
 
+paru_works() {
+    local bin="$1"
+    [[ -x "$bin" ]] || return 1
+    "$bin" -V &>/dev/null || "$bin" --version &>/dev/null || "$bin" --help &>/dev/null
+}
+
 resolve_paru_bin() {
     local candidate
 
-    if [[ -x /usr/bin/paru ]] && /usr/bin/paru --version &>/dev/null; then
+    if paru_works /usr/bin/paru; then
         echo "/usr/bin/paru"
         return 0
     fi
 
     if command -v paru &>/dev/null; then
         candidate="$(command -v paru)"
-        if [[ -x "$candidate" ]] && "$candidate" --version &>/dev/null; then
+        if paru_works "$candidate"; then
             echo "$candidate"
             return 0
         fi
@@ -87,6 +93,7 @@ resolve_paru_bin() {
 
 ensure_paru() {
     local resolved
+    local paru_err=""
 
     if resolved="$(resolve_paru_bin)"; then
         PARU_BIN="$resolved"
@@ -135,6 +142,17 @@ ensure_paru() {
         fi
     fi
     rm -rf "$tmpdir"
+
+    if [[ -x /usr/bin/paru ]]; then
+        paru_err="$(/usr/bin/paru -V 2>&1 || true)"
+        if [[ -z "$paru_err" ]]; then
+            paru_err="$(/usr/bin/paru --version 2>&1 || true)"
+        fi
+        log_warn "Detected /usr/bin/paru, but it is not runnable."
+        if [[ -n "$paru_err" ]]; then
+            log_warn "paru runtime error: $paru_err"
+        fi
+    fi
 
     log_error "paru install/repair failed."
     return 1
