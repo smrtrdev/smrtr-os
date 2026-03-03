@@ -9,7 +9,7 @@ login_method=$(ask_choice "Select login method:" "greetd + tuigreet (graphical l
 case "$login_method" in
     "greetd + tuigreet (graphical login)")
         log_step "Installing greetd + tuigreet (password login)..."
-        pkg_install greetd tuigreet
+        pkg_install greetd greetd-tuigreet
 
         sudo mkdir -p /etc/greetd
         sudo tee /etc/greetd/config.toml >/dev/null <<EOF
