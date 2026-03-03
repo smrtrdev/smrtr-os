@@ -7,8 +7,15 @@ source "$SCRIPT_DIR/../lib/helpers.sh"
 
 log_step "Configuring sudo timeout..."
 sudo mkdir -p /etc/sudoers.d
-echo 'Defaults timestamp_timeout=30' | sudo tee /etc/sudoers.d/smrtr >/dev/null
-sudo chmod 440 /etc/sudoers.d/smrtr
+_sudoers_tmp=$(mktemp)
+echo 'Defaults timestamp_timeout=30' > "$_sudoers_tmp"
+if ! sudo visudo -cf "$_sudoers_tmp" >/dev/null 2>&1; then
+    rm -f "$_sudoers_tmp"
+    log_error "sudoers validation failed; aborting sudoers configuration."
+    exit 1
+fi
+sudo install -m 440 "$_sudoers_tmp" /etc/sudoers.d/smrtr
+rm -f "$_sudoers_tmp"
 
 # --- Sysctl Tweaks ---
 
