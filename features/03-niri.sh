@@ -11,7 +11,8 @@ pkg_install niri xwayland-satellite \
     wl-clipboard \
     swaybg swaylock swayidle \
     brightnessctl playerctl \
-    grim slurp pulsemixer
+    grim slurp pulsemixer \
+    imagemagick
 
 log_step "Installing AUR packages for Niri..."
 aur_install cliphist bluetuith wlsunset
