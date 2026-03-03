@@ -96,6 +96,13 @@ build_paru_from_source() {
     local tmpdir
 
     sudo pacman -S --needed --noconfirm base-devel git
+
+    # On fresh systems, rustup may exist without a default toolchain.
+    if command -v rustup &>/dev/null && ! rustup show active-toolchain &>/dev/null; then
+        log_info "Configuring rustup default toolchain (stable)..."
+        rustup default stable
+    fi
+
     tmpdir="$(mktemp -d)"
     if git clone https://aur.archlinux.org/paru.git "$tmpdir/paru" && \
        (cd "$tmpdir/paru" && makepkg -si --syncdeps --needed --noconfirm); then
