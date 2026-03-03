@@ -33,15 +33,22 @@ EOF
     "TTY autologin (minimal)")
         log_step "Configuring TTY autologin..."
 
-        # Getty autologin override
-        sudo mkdir -p /etc/systemd/system/getty@tty1.service.d
-        sudo tee /etc/systemd/system/getty@tty1.service.d/autologin.conf >/dev/null <<EOF
+        # Getty autologin override — security gate
+        log_warn "SECURITY: Enabling autologin on TTY1 disables password-based authentication for local console access."
+        log_warn "Anyone with physical or console access will obtain a shell as '$USER' without entering a password."
+        if ask_yes_no "Enable autologin on TTY1? (disables local authentication)" "n"; then
+            sudo mkdir -p /etc/systemd/system/getty@tty1.service.d
+            sudo tee /etc/systemd/system/getty@tty1.service.d/autologin.conf >/dev/null <<EOF
 [Service]
 ExecStart=
 ExecStart=-/sbin/agetty -o '-p -f -- \\u' --noclear --autologin $USER %I \$TERM
 EOF
-        sudo systemctl daemon-reload
-        sudo systemctl enable getty@tty1.service
+            sudo systemctl daemon-reload
+            sudo systemctl enable getty@tty1.service
+            log_info "TTY autologin enabled."
+        else
+            log_info "Autologin skipped. TTY1 will require a password to log in."
+        fi
 
         # Bash auto-start niri
         BASH_PROFILE="$HOME/.bash_profile"
@@ -76,7 +83,7 @@ SMRTR_LOGIN_NU
             log_warn "gnome-keyring PAM not found in /etc/pam.d/login — keyring may not auto-unlock."
         fi
 
-        log_info "TTY autologin configured."
+        log_info "TTY login manager setup complete."
         ;;
 esac
 

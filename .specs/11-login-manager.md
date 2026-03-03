@@ -12,8 +12,9 @@ Configure a display manager (login screen) so the user boots directly into a gra
 - Enable `sddm.service`
 
 ### Option B: No display manager (minimal)
-- Auto-login via `getty` autologin on TTY1
-- Enable `getty@tty1.service` with autologin
+- Auto-login via `getty` autologin on TTY1 (optional — requires explicit confirmation)
+- **Security note:** Enabling autologin disables password-based authentication for local console access. Anyone with physical or console access will obtain a full shell as the user without a password. The script warns the user and prompts for explicit confirmation (default: no) before enabling autologin.
+- Enable `getty@tty1.service` with autologin only if confirmed
 - Auto-start Niri based on which shell is the user's default:
   - **If bash:** Add to `~/.bash_profile`:
     ```bash
