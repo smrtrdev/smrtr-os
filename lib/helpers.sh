@@ -7,6 +7,7 @@ REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CONFIG_DIR="$REPO_DIR/config"
 USER_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}"
 BACKUP_DIR="$USER_CONFIG/smrtr-backup/$(date +%Y%m%d_%H%M%S)"
+PARU_BIN=""
 
 # --- Logging ---
 
@@ -48,8 +49,7 @@ pkg_install() {
 }
 
 aur_install() {
-    if ! command -v paru &>/dev/null; then
-        log_error "paru is not installed. Cannot install AUR packages."
+    if ! ensure_paru; then
         return 1
     fi
     local to_install=()
@@ -60,10 +60,63 @@ aur_install() {
     done
     if [[ ${#to_install[@]} -gt 0 ]]; then
         log_info "Installing AUR packages: ${to_install[*]}"
-        paru -S --needed --noconfirm "${to_install[@]}"
+        "$PARU_BIN" -S --needed --noconfirm "${to_install[@]}"
     else
         log_info "All AUR packages already installed: $*"
     fi
+}
+
+resolve_paru_bin() {
+    local candidate
+
+    if [[ -x /usr/bin/paru ]] && /usr/bin/paru --version &>/dev/null; then
+        echo "/usr/bin/paru"
+        return 0
+    fi
+
+    if command -v paru &>/dev/null; then
+        candidate="$(command -v paru)"
+        if [[ -x "$candidate" ]] && "$candidate" --version &>/dev/null; then
+            echo "$candidate"
+            return 0
+        fi
+    fi
+
+    return 1
+}
+
+ensure_paru() {
+    local resolved
+
+    if resolved="$(resolve_paru_bin)"; then
+        PARU_BIN="$resolved"
+        return 0
+    fi
+
+    if command -v paru &>/dev/null; then
+        log_warn "paru exists but is not runnable (often caused by a pacman/libalpm upgrade). Reinstalling paru..."
+    else
+        log_info "paru not found. Installing paru..."
+    fi
+
+    if pacman -Si paru &>/dev/null; then
+        sudo pacman -S --needed --noconfirm paru
+    else
+        log_info "paru package not available in repos. Building paru-bin from AUR..."
+        local tmpdir
+        tmpdir="$(mktemp -d)"
+        git clone https://aur.archlinux.org/paru-bin.git "$tmpdir/paru-bin"
+        (cd "$tmpdir/paru-bin" && makepkg -si --noconfirm)
+        rm -rf "$tmpdir"
+    fi
+
+    if resolved="$(resolve_paru_bin)"; then
+        PARU_BIN="$resolved"
+        return 0
+    fi
+
+    log_error "paru install/repair failed."
+    return 1
 }
 
 # --- Config Management ---

@@ -30,16 +30,8 @@ pkg_install ntfs-3g exfatprogs udisks2
 # --- AUR Helper (paru) ---
 
 log_step "Setting up paru..."
-if ! command -v paru &>/dev/null; then
-    log_info "Building paru from AUR..."
-    tmpdir="$(mktemp -d)"
-    git clone https://aur.archlinux.org/paru-bin.git "$tmpdir/paru-bin"
-    (cd "$tmpdir/paru-bin" && makepkg -si --noconfirm)
-    rm -rf "$tmpdir"
-    log_info "paru installed successfully."
-else
-    log_info "paru already installed."
-fi
+ensure_paru
+log_info "paru is ready."
 
 # --- Audio (PipeWire) ---
 
