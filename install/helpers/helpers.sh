@@ -91,10 +91,27 @@ resolve_paru_bin() {
     return 1
 }
 
+build_paru_from_source() {
+    local resolved
+    local tmpdir
+
+    sudo pacman -S --needed --noconfirm base-devel git
+    tmpdir="$(mktemp -d)"
+    if git clone https://aur.archlinux.org/paru.git "$tmpdir/paru" && \
+       (cd "$tmpdir/paru" && makepkg -si --syncdeps --needed --noconfirm); then
+        if resolved="$(resolve_paru_bin)"; then
+            PARU_BIN="$resolved"
+            rm -rf "$tmpdir"
+            return 0
+        fi
+    fi
+    rm -rf "$tmpdir"
+    return 1
+}
+
 ensure_paru() {
     local resolved
     local paru_err=""
-    local tmpdir
 
     if resolved="$(resolve_paru_bin)"; then
         PARU_BIN="$resolved"
@@ -119,30 +136,6 @@ ensure_paru() {
         log_warn "Repo paru install did not produce a working binary."
     fi
 
-    log_info "Building paru from AUR source..."
-    tmpdir="$(mktemp -d)"
-    if git clone https://aur.archlinux.org/paru.git "$tmpdir/paru" && \
-       (cd "$tmpdir/paru" && makepkg -si --noconfirm); then
-        if resolved="$(resolve_paru_bin)"; then
-            PARU_BIN="$resolved"
-            rm -rf "$tmpdir"
-            return 0
-        fi
-    fi
-    rm -rf "$tmpdir"
-
-    log_warn "Source build did not produce a working paru binary. Trying paru-bin as fallback..."
-    tmpdir="$(mktemp -d)"
-    if git clone https://aur.archlinux.org/paru-bin.git "$tmpdir/paru-bin" && \
-       (cd "$tmpdir/paru-bin" && makepkg -si --noconfirm); then
-        if resolved="$(resolve_paru_bin)"; then
-            PARU_BIN="$resolved"
-            rm -rf "$tmpdir"
-            return 0
-        fi
-    fi
-    rm -rf "$tmpdir"
-
     if [[ -x /usr/bin/paru ]]; then
         paru_err="$(/usr/bin/paru -V 2>&1 || true)"
         if [[ -z "$paru_err" ]]; then
@@ -158,19 +151,12 @@ ensure_paru() {
         if grep -q "libalpm\\.so\\." <<<"$paru_err"; then
             log_warn "Detected libalpm ABI mismatch. Rebuilding paru from source..."
             sudo pacman -R --noconfirm paru-bin paru-bin-debug paru &>/dev/null || true
-            sudo pacman -S --needed --noconfirm base-devel git
-
-            tmpdir="$(mktemp -d)"
-            if git clone https://aur.archlinux.org/paru.git "$tmpdir/paru" && \
-               (cd "$tmpdir/paru" && makepkg -si --noconfirm); then
-                if resolved="$(resolve_paru_bin)"; then
-                    PARU_BIN="$resolved"
-                    rm -rf "$tmpdir"
-                    return 0
-                fi
-            fi
-            rm -rf "$tmpdir"
         fi
+    fi
+
+    log_info "Installing paru from AUR source..."
+    if build_paru_from_source; then
+        return 0
     fi
 
     log_error "paru install/repair failed."
