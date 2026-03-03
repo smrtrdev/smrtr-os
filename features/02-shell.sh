@@ -63,7 +63,7 @@ source ~/.config/smrtr/bash/functions.sh
 eval "$(starship init bash)"
 eval "$(zoxide init bash)"
 eval "$(fzf --bash)"
-eval "$(mise activate bash)"
+command -v mise >/dev/null 2>&1 && eval "$(mise activate bash)"
 export EDITOR="${EDITOR:-nvim}"
 export VISUAL="${VISUAL:-nvim}"
 export HISTSIZE=10000
