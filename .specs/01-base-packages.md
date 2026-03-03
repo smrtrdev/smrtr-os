@@ -7,7 +7,9 @@ Install essential system packages and set up the AUR helper (paru). This is the 
 ## Requirements
 
 ### AUR Helper
-- Install `paru` if not already present (clone from AUR and `makepkg -si`).
+- Install `paru` if not already present using the vendored PKGBUILD at `config/paru-bin/PKGBUILD`.
+- The PKGBUILD is pinned to paru-bin v2.1.0 with verified SHA256 checksums sourced from the official GitHub release (https://github.com/Morganamilo/paru/releases/tag/v2.1.0).
+- To upgrade paru, update `config/paru-bin/PKGBUILD` with the new version and checksums, and review all changes before committing.
 - Ensure `base-devel` is installed first (required for building AUR packages).
 
 ### Core System Packages

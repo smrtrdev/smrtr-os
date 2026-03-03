@@ -31,9 +31,9 @@ pkg_install ntfs-3g exfatprogs udisks2
 
 log_step "Setting up paru..."
 if ! command -v paru &>/dev/null; then
-    log_info "Building paru from AUR..."
+    log_info "Building paru from vendored PKGBUILD (paru-bin v2.1.0)..."
     tmpdir="$(mktemp -d)"
-    git clone https://aur.archlinux.org/paru-bin.git "$tmpdir/paru-bin"
+    cp -r "$SCRIPT_DIR/../config/paru-bin" "$tmpdir/paru-bin"
     (cd "$tmpdir/paru-bin" && makepkg -si --noconfirm)
     rm -rf "$tmpdir"
     log_info "paru installed successfully."
