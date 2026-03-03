@@ -1,23 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/../lib/helpers.sh"
-
-log_step "Configuring pacman..."
-
-# Enable Color, ParallelDownloads, ILoveCandy
-sudo sed -i 's/^#Color$/Color/' /etc/pacman.conf
-sudo sed -i 's/^#ParallelDownloads.*/ParallelDownloads = 5/' /etc/pacman.conf
-if ! grep -q "^ILoveCandy" /etc/pacman.conf; then
-    sudo sed -i '/^ParallelDownloads/a ILoveCandy' /etc/pacman.conf
-fi
-
-# Enable multilib
-if ! grep -q "^\[multilib\]" /etc/pacman.conf; then
-    sudo bash -c 'echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf'
-fi
-
-sudo pacman -Syu --noconfirm
+source "$SMRTR_INSTALL/helpers/helpers.sh"
 
 # --- Core Packages ---
 
@@ -30,16 +13,8 @@ pkg_install ntfs-3g exfatprogs udisks2
 # --- AUR Helper (paru) ---
 
 log_step "Setting up paru..."
-if ! command -v paru &>/dev/null; then
-    log_info "Building paru from AUR..."
-    tmpdir="$(mktemp -d)"
-    git clone https://aur.archlinux.org/paru-bin.git "$tmpdir/paru-bin"
-    (cd "$tmpdir/paru-bin" && makepkg -si --noconfirm)
-    rm -rf "$tmpdir"
-    log_info "paru installed successfully."
-else
-    log_info "paru already installed."
-fi
+ensure_paru
+log_info "paru is ready."
 
 # --- Audio (PipeWire) ---
 

@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/../lib/helpers.sh"
+source "$SMRTR_INSTALL/helpers/helpers.sh"
 
 if ! command -v mise &>/dev/null; then
-    log_warn "mise is not on PATH. Shell configs reference 'mise activate' which will fail until mise is installed (see 02-development-tools.sh)."
+    log_warn "mise is not on PATH. Shell configs reference 'mise activate' which will fail until mise is installed (see packaging/development.sh)."
 fi
 
 log_step "Installing shell tools..."
