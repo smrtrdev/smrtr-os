@@ -97,7 +97,12 @@ install_config() {
     backup_config "$target"
     ensure_dir "$(dirname "$target")"
     cp -a "$source" "$target"
-    chmod 644 "$target"
+    if [[ -d "$target" ]]; then
+        find "$target" -type d -exec chmod 755 {} +
+        find "$target" -type f -exec chmod 644 {} +
+    else
+        chmod 644 "$target"
+    fi
     log_info "Installed config: $source_rel → $target"
 }
 
