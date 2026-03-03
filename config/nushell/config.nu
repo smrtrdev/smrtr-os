@@ -45,6 +45,6 @@ source ~/.cache/mise/init.nu
 $env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense'
 
 # Fastfetch on login
-if ($env | get -i SHLVL | default "1") == "1" {
+if ($env | get -o SHLVL | default "1") == "1" {
     fastfetch
 }
