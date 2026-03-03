@@ -1,0 +1,70 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 32,
+  "modules-left": ["niri/workspaces"],
+  "modules-center": ["clock"],
+  "modules-right": [
+    "tray",
+    "network",
+    "bluetooth",
+    "pulseaudio",
+    SMRTR_BATTERY_PLACEHOLDER
+    "custom/power"
+  ],
+
+  "niri/workspaces": {
+    "format": "{id}",
+    "on-click": "activate"
+  },
+
+  "clock": {
+    "format": "{:%a %d %b  %H:%M}",
+    "tooltip-format": "{:%Y-%m-%d %A}"
+  },
+
+  "network": {
+    "format-wifi": " {essid}",
+    "format-ethernet": " {ifname}",
+    "format-disconnected": "󰤭 ",
+    "tooltip-format": "{ipaddr}",
+    "on-click": "ghostty -e nmtui"
+  },
+
+  "bluetooth": {
+    "format": "",
+    "format-connected": " {device_alias}",
+    "format-disabled": "",
+    "on-click": "ghostty -e bluetuith"
+  },
+
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": "󰖁 ",
+    "format-icons": {
+      "default": ["", "", ""]
+    },
+    "on-click": "ghostty -e pulsemixer"
+  },
+
+  "battery": {
+    "format": "{icon} {capacity}%",
+    "format-charging": "󰂄 {capacity}%",
+    "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+    "states": {
+      "warning": 20,
+      "critical": 10
+    }
+  },
+
+  "tray": {
+    "spacing": 8
+  },
+
+  "custom/power": {
+    "format": "⏻",
+    "on-click": "systemctl poweroff",
+    "on-click-right": "systemctl reboot",
+    "tooltip": "Left: shutdown, Right: reboot"
+  }
+}
