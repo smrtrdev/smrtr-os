@@ -124,6 +124,7 @@ ask_yes_no() {
         prompt="$question [y/N] "
     fi
 
+    local answer
     read -rp "$prompt" answer
     answer="${answer:-$default}"
 
