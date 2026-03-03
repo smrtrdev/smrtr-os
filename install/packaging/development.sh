@@ -8,7 +8,14 @@ log_step "Installing development tools..."
 pkg_install neovim github-cli lazygit make cmake jq yq tokei hyperfine
 
 log_step "Installing AUR development packages..."
-aur_install mise-bin difftastic
+aur_install difftastic
+
+log_step "Installing mise..."
+if ! command -v mise &>/dev/null; then
+    curl https://mise.run | sh
+else
+    log_info "mise already installed."
+fi
 
 # --- Git Config ---
 
