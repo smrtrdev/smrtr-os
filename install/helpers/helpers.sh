@@ -3,7 +3,7 @@
 # Sourced by install.sh and all feature scripts
 
 # Constants
-REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+REPO_DIR="${SMRTR_PATH:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 CONFIG_DIR="$REPO_DIR/config"
 USER_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}"
 BACKUP_DIR="$USER_CONFIG/smrtr-backup/$(date +%Y%m%d_%H%M%S)"
@@ -199,7 +199,7 @@ ask_yes_no() {
     fi
 
     local answer
-    read -rp "$prompt" answer
+    read -rp "$prompt" answer </>/dev/tty
     answer="${answer:-$default}"
 
     [[ "${answer,,}" == "y" ]]
@@ -211,19 +211,19 @@ ask_choice() {
     local options=("$@")
     local i
 
-    echo "$question"
+    echo "$question" >&2
     for i in "${!options[@]}"; do
-        echo "  $((i + 1))) ${options[$i]}"
+        echo "  $((i + 1))) ${options[$i]}" >&2
     done
 
     local choice
     while true; do
-        read -rp "Enter choice [1-${#options[@]}]: " choice
+        read -rp "Enter choice [1-${#options[@]}]: " choice <>/dev/tty
         if [[ "$choice" =~ ^[0-9]+$ ]] && (( choice >= 1 && choice <= ${#options[@]} )); then
             echo "${options[$((choice - 1))]}"
             return 0
         fi
-        echo "Invalid choice. Try again."
+        echo "Invalid choice. Try again." >&2
     done
 }
 

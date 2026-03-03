@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/../lib/helpers.sh"
+source "$SMRTR_INSTALL/helpers/helpers.sh"
 
 # --- Core Dev Tools ---
 
@@ -43,7 +42,7 @@ if ask_yes_no "Install LazyVim (preconfigured Neovim setup)?" "y"; then
         rm -rf "$USER_CONFIG/nvim"
     fi
     # Pinned to a known-good commit; review and update deliberately to avoid supply-chain risk.
-    LAZYVIM_STARTER_COMMIT="803bc181d7c0d6d5eeba9274d9be49b287294d99"
+    LAZYVIM_STARTER_COMMIT="fca0af57cc3851b14f96a795a9c9bfafc5096dd1"
     git clone https://github.com/LazyVim/starter "$USER_CONFIG/nvim"
     git -C "$USER_CONFIG/nvim" checkout "$LAZYVIM_STARTER_COMMIT"
     rm -rf "$USER_CONFIG/nvim/.git"
@@ -52,14 +51,10 @@ fi
 
 # --- Claude Code (optional) ---
 
-if command -v mise &>/dev/null; then
-    if ask_yes_no "Install Claude Code (requires Node.js via mise)?" "n"; then
-        log_step "Installing Claude Code..."
-        mise install node@lts
-        eval "$(mise activate bash)"
-        npm install -g @anthropic-ai/claude-code
-        log_info "Claude Code installed."
-    fi
+if ask_yes_no "Install Claude Code?" "n"; then
+    log_step "Installing Claude Code..."
+    curl -fsSL https://claude.ai/install.sh | bash
+    log_info "Claude Code installed."
 fi
 
 log_info "Development tools setup complete."
