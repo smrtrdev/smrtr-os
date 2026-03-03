@@ -74,7 +74,12 @@ ensure_dir() {
 
 backup_config() {
     local target="$1"
+    local source="${2:-}"
     [[ -e "$target" ]] || return 0
+
+    if [[ -n "$source" && -e "$source" ]] && cmp -s "$source" "$target"; then
+        return 0
+    fi
 
     local rel_path="${target#$HOME/}"
     local backup_path="$BACKUP_DIR/$rel_path"
@@ -94,7 +99,7 @@ install_config() {
         return 1
     fi
 
-    backup_config "$target"
+    backup_config "$target" "$source"
     ensure_dir "$(dirname "$target")"
     cp -a "$source" "$target"
     chmod 644 "$target"
