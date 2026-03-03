@@ -94,6 +94,7 @@ resolve_paru_bin() {
 ensure_paru() {
     local resolved
     local paru_err=""
+    local tmpdir
 
     if resolved="$(resolve_paru_bin)"; then
         PARU_BIN="$resolved"
@@ -119,7 +120,6 @@ ensure_paru() {
     fi
 
     log_info "Building paru from AUR source..."
-    local tmpdir
     tmpdir="$(mktemp -d)"
     if git clone https://aur.archlinux.org/paru.git "$tmpdir/paru" && \
        (cd "$tmpdir/paru" && makepkg -si --noconfirm); then
@@ -151,6 +151,25 @@ ensure_paru() {
         log_warn "Detected /usr/bin/paru, but it is not runnable."
         if [[ -n "$paru_err" ]]; then
             log_warn "paru runtime error: $paru_err"
+        fi
+
+        # paru-bin can briefly lag behind pacman SONAME bumps (libalpm).
+        # If that happens, rebuild paru from source against local libraries.
+        if grep -q "libalpm\\.so\\." <<<"$paru_err"; then
+            log_warn "Detected libalpm ABI mismatch. Rebuilding paru from source..."
+            sudo pacman -R --noconfirm paru-bin paru-bin-debug paru &>/dev/null || true
+            sudo pacman -S --needed --noconfirm base-devel git
+
+            tmpdir="$(mktemp -d)"
+            if git clone https://aur.archlinux.org/paru.git "$tmpdir/paru" && \
+               (cd "$tmpdir/paru" && makepkg -si --noconfirm); then
+                if resolved="$(resolve_paru_bin)"; then
+                    PARU_BIN="$resolved"
+                    rm -rf "$tmpdir"
+                    return 0
+                fi
+            fi
+            rm -rf "$tmpdir"
         fi
     fi
 
