@@ -41,8 +41,8 @@ enable_service systemd-timesyncd.service
 current_tz=$(timedatectl show --property=Timezone --value 2>/dev/null || echo "")
 if [[ -z "$current_tz" || "$current_tz" == "UTC" ]]; then
     log_step "Setting timezone..."
-    # Try auto-detection via IP geolocation
-    detected_tz=$(curl -sf "http://ip-api.com/line/?fields=timezone" 2>/dev/null || echo "")
+    # Try auto-detection via IP geolocation (HTTPS to avoid plaintext data leakage)
+    detected_tz=$(curl -sf "https://ipapi.co/timezone" 2>/dev/null || echo "")
     if [[ -n "$detected_tz" ]]; then
         if ask_yes_no "Detected timezone: $detected_tz. Use this?"; then
             sudo timedatectl set-timezone "$detected_tz"
