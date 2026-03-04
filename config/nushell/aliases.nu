@@ -10,3 +10,4 @@ alias gl = git log --oneline --graph
 alias gd = git diff
 alias gc = git commit
 alias gp = git push
+alias y = yazi

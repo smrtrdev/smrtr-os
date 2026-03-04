@@ -43,8 +43,3 @@ source ~/.cache/mise/init.nu
 
 # Carapace bridge
 $env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense'
-
-# Fastfetch on login
-if ($env | get -o SHLVL | default "1") == "1" {
-    fastfetch
-}

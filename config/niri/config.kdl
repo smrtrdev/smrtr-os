@@ -31,18 +31,31 @@ layout {
         proportion 1.0
     }
 
+    preset-window-heights {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+        proportion 1.0
+    }
+
     default-column-width {
         proportion 0.5
     }
 
     focus-ring {
+        on
         width 2
         active-color "#89b4fa"
         inactive-color "#313244"
+        urgent-color "#9b0000"
     }
 
     border {
-        off
+        on
+        width 2
+        active-color "#ffc87f"
+        inactive-color "#505050"
+        urgent-color "#9b0000"
     }
 
     shadow {
@@ -98,24 +111,31 @@ binds {
     Mod+M { focus-workspace-up; }
     Mod+UP { focus-workspace-up; }
 
-    // Move windows
+    // Move columns windows
     Mod+Shift+T { move-column-left; }
     Mod+Shift+LEFT { move-column-left; }
     Mod+Shift+R { move-column-right; }
     Mod+Shift+RIGHT { move-column-right; }
-    Mod+Shift+N { move-window-down; }
-    Mod+Shift+DOWN { move-window-down; }
-    Mod+Shift+M { move-window-up; }
-    Mod+Shift+UP { move-window-up; }
+    Mod+Shift+N { move-column-to-workspace-down; }
+    Mod+Shift+DOWN { move-column-to-workspace-down; }
+    Mod+Shift+M { move-column-to-workspace-up; }
+    Mod+Shift+UP { move-column-to-workspace-up; }
+
+    Mod+Ctrl+N { move-workspace-down; }
+    Mod+Alt+N { move-window-down; }
+    Mod+Ctrl+M { move-workspace-up; }
+    Mod+Alt+M { move-window-up; }
 
     // Resize
-    Mod+P { set-column-width "-10%"; }
-    Mod+J { set-column-width "+10%"; }
-    Mod+Shift+Minus { set-window-height "-10%"; }
-    Mod+Shift+Equal { set-window-height "+10%"; }
+    Mod+Ctrl+LEFT { set-column-width "-10%"; }
+    Mod+Ctrl+RIGHT { set-column-width "+10%"; }
+    Mod+Ctrl+UP { set-window-height "+10%"; }
+    Mod+Ctrl+DOWN { set-window-height "-10%"; }
+
 
     // Preset widths
     Mod+S { switch-preset-column-width; }
+    Mod+H { switch-preset-window-height; }
 
     // Workspaces
     Mod+1 { focus-workspace 1; }
