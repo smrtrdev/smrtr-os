@@ -7,7 +7,7 @@ if ! command -v mise &>/dev/null; then
 fi
 
 log_step "Installing shell tools..."
-pkg_install nushell starship fzf fd ripgrep eza bat zoxide tldr fastfetch zellij htop btop tree
+pkg_install nushell starship fzf fd ripgrep eza bat zoxide tldr zellij htop btop tree
 
 log_step "Installing AUR shell packages..."
 aur_install carapace-bin
@@ -47,37 +47,10 @@ install_config "starship.toml" "$USER_CONFIG/starship.toml"
 install_config "zellij/config.kdl" "$USER_CONFIG/zellij/config.kdl"
 install_config "zellij/layouts/default.kdl" "$USER_CONFIG/zellij/layouts/default.kdl"
 
-# Fastfetch
-install_config "fastfetch/config.jsonc" "$USER_CONFIG/fastfetch/config.jsonc"
-
 # --- Bashrc Integration ---
 
 log_step "Configuring .bashrc..."
-
-BASHRC="$HOME/.bashrc"
-MARKER="# smrtr-os shell integration"
-
-if ! grep -qF "$MARKER" "$BASHRC" 2>/dev/null; then
-    cat >> "$BASHRC" << 'SMRTR_BASHRC'
-
-# smrtr-os shell integration
-source ~/.config/smrtr/bash/aliases.sh
-source ~/.config/smrtr/bash/functions.sh
-eval "$(starship init bash)"
-eval "$(zoxide init bash)"
-eval "$(fzf --bash)"
-eval "$(mise activate bash)"
-export EDITOR="${EDITOR:-nvim}"
-export VISUAL="${VISUAL:-nvim}"
-export HISTSIZE=10000
-export HISTFILESIZE=20000
-export HISTCONTROL=ignoreboth:erasedups
-[[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]] && fastfetch
-SMRTR_BASHRC
-    log_info "Added smrtr-os integration to .bashrc"
-else
-    log_info ".bashrc already configured."
-fi
+install_config "smrtr/bash/bashrc" "$HOME/.bashrc"
 
 # --- Create cache dirs for nushell integrations ---
 

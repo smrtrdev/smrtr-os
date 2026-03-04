@@ -3,7 +3,7 @@ set -euo pipefail
 source "$SMRTR_INSTALL/helpers/helpers.sh"
 
 log_step "Installing Niri and Wayland packages..."
-pkg_install niri xwayland-satellite \
+pkg_install niri uwsm xwayland-satellite \
     xdg-desktop-portal xdg-desktop-portal-gnome xdg-utils \
     qt6-wayland qt5-wayland \
     polkit-gnome \

@@ -9,6 +9,7 @@ echo "  │   Arch Linux post-install setup      │"
 echo "  └─────────────────────────────────────┘"
 echo ""
 
+
 log_step "Checking prerequisites..."
 
 if [[ $EUID -eq 0 ]]; then

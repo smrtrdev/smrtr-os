@@ -15,6 +15,7 @@ def --env ensure-cache [name: string, cmd: string] {
 
 let extra_paths_prepend = [
   $"($env.HOME)/.local/bin"
+  $"($env.HOME)/.local/share/smrtr-os/bin"
 ]
 
 let extra_paths_append = [

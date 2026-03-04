@@ -35,16 +35,11 @@ install_config "elephant/desktopapplications.toml" "$USER_CONFIG/elephant/deskto
 log_step "Reloading user systemd daemon..."
 systemctl --user daemon-reload
 
-log_step "Installing launcher executables..."
-BIN_TARGET_DIR="$HOME/.local/bin"
-ensure_dir "$BIN_TARGET_DIR"
-
-for exe in smrtr-restart-walker smrtr-launch-walker; do
-    cp -f "$REPO_DIR/bin/$exe" "$BIN_TARGET_DIR/$exe"
-    chmod 755 "$BIN_TARGET_DIR/$exe"
-done
-
-RESTART_HELPER="$BIN_TARGET_DIR/smrtr-restart-walker"
+RESTART_HELPER="$REPO_DIR/bin/smrtr-restart-walker"
+if [[ ! -x "$RESTART_HELPER" ]]; then
+    log_error "Required helper is not executable: $RESTART_HELPER"
+    exit 1
+fi
 
 log_step "Installing pacman hook for Walker/Elephant upgrades..."
 sudo mkdir -p /etc/pacman.d/hooks
