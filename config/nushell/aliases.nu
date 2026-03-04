@@ -1,6 +1,6 @@
 # smrtr-os nushell aliases
 
-alias ls = eza --icons
+# alias ls = eza --icons
 alias ll = eza -la --icons
 alias lt = eza --tree --icons
 alias cat = bat --paging=never

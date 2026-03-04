@@ -28,6 +28,7 @@ layout {
         proportion 0.33333
         proportion 0.5
         proportion 0.66667
+        proportion 1.0
     }
 
     default-column-width {
@@ -58,7 +59,7 @@ environment {
 // --- Autostart ---
 
 spawn-at-startup "waybar"
-spawn-at-startup "swaybg" "-i" "SMRTR_WALLPAPER_PLACEHOLDER" "-m" "fill"
+spawn-at-startup "swaybg" "-i" "/home/smrtr/.config/smrtr/wallpapers/default.jpg" "-m" "fill"
 spawn-at-startup "swayidle" "-w" "timeout" "300" "swaylock -f" "timeout" "600" "niri msg action power-off-monitors" "resume" "niri msg action power-on-monitors"
 spawn-at-startup "mako"
 spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
@@ -178,7 +179,7 @@ window-rule {
 
 window-rule {
     match app-id="zen-browser"
-    default-column-width { proportion 0.66667; }
+    default-column-width { proportion 1.0; }
 }
 
 window-rule {

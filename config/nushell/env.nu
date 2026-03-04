@@ -13,6 +13,16 @@ def --env ensure-cache [name: string, cmd: string] {
     }
 }
 
+let extra_paths_prepend = [
+  $"($env.HOME)/.local/bin"
+]
+
+let extra_paths_append = [
+  "/usr/bin"
+]
+
+$env.PATH = ($extra_paths_prepend | append $env.PATH | append $extra_paths_append)
+
 ensure-cache "starship" "starship init nu"
 ensure-cache "zoxide" "zoxide init nushell"
 ensure-cache "carapace" "carapace _carapace nushell"
