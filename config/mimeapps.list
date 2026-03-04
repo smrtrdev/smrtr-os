@@ -14,7 +14,7 @@ image/svg+xml=imv-dir.desktop
 image/bmp=imv-dir.desktop
 
 # PDF
-application/pdf=org.pwmt.zathura.desktop
+application/pdf=zen.desktop
 
 # Video
 video/mp4=mpv.desktop
@@ -29,10 +29,10 @@ audio/ogg=mpv.desktop
 audio/wav=mpv.desktop
 
 # Web
-text/html=zen-browser.desktop
-x-scheme-handler/http=zen-browser.desktop
-x-scheme-handler/https=zen-browser.desktop
-x-scheme-handler/about=zen-browser.desktop
+text/html=zen.desktop
+x-scheme-handler/http=zen.desktop
+x-scheme-handler/https=zen.desktop
+x-scheme-handler/about=zen.desktop
 
 # Archives
 application/zip=org.gnome.FileRoller.desktop

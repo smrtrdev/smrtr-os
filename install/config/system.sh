@@ -95,4 +95,7 @@ ensure_dir "$HOME/Pictures/Screenshots"
 log_step "Installing environment.d config..."
 install_config "environment.d/smrtr.conf" "$USER_CONFIG/environment.d/smrtr.conf"
 
+log_step "Installing uwsm env config..."
+install_config "uwsm/env" "$USER_CONFIG/uwsm/env"
+
 log_info "System services setup complete."
